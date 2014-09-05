@@ -1,0 +1,13 @@
+{% load bb_ember i18n static %}
+
+{% tplhandlebars "mchangaMpesa" %}
+    <form>
+        <h6>{% trans 'M-PESA'%}</h6>
+        {% blocktrans %} 
+            M-pesa payment.
+        {% endblocktrans%}
+
+        {{ view Em.TextField valueBinding="mpesa_confirmation" placeHolder="Mpesa Confirmation Code"}}
+
+    </form>
+{% endtplhandlebars %}

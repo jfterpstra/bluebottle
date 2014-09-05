@@ -1,6 +1,8 @@
 from bluebottle.payments.models import Payment, OrderPayment
 from bluebottle.payments_docdata.admin import DocdataPaymentAdmin
 from bluebottle.payments_docdata.models import DocdataPayment
+from bluebottle.payments_mchanga.admin import MchangaPaymentAdmin
+from bluebottle.payments_mchanga.models import MchangaPayment
 from bluebottle.payments_mock.admin import MockPaymentAdmin
 from bluebottle.payments_mock.models import MockPayment
 from django.contrib import admin
@@ -61,11 +63,13 @@ class PaymentAdmin(PolymorphicParentModelAdmin):
 
     base_model = Payment
 
-    list_display = ('created', 'order_payment_amount', 'polymorphic_ctype')
+    list_display = ('created', 'order_payment_amount', 'polymorphic_ctype', 'status')
     # list_filter = ('status', )
     ordering = ('-created', )
 
+    # FIXME: Make this dynamic
     child_models = (
+        (MchangaPayment, MchangaPaymentAdmin),
         (DocdataPayment, DocdataPaymentAdmin),
         (MockPayment, MockPaymentAdmin),
     )
