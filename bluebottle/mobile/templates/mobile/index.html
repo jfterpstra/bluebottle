@@ -1,0 +1,164 @@
+{% load staticfiles  i18n %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Form elements - jQuery Mobile Demos</title>
+    <link rel="stylesheet" href="{% static 'js/mobile/demos/css/themes/default/jquery.mobile-1.4.5.min.css' %}">
+
+	<script src="//code.jquery.com/jquery-1.7.1.min.js"></script>
+    <link rel="stylesheet" href="{% static 'js/mobile/demos/_assets/css/jqm-demos.css' %}">
+    <link rel="shortcut icon" href="{% static 'js/mobile/demos/favicon.ico' %}">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+    <script src="{% static 'js/mobile/demos/js/jquery.js' %}"></script>
+    <script src="{% static 'js/mobile/app.js' %}"></script>
+    <script src="{% static 'js/mobile/jquery.mobile-1.4.5.min.js' %}"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.0/handlebars.min.js"></script>
+
+
+
+    <style>
+        div.project-img {
+            -webkit-mask-image:-webkit-gradient(linear, right top, left top, from(rgba(0,0,0,0.4)), to(rgba(0,0,0,0)));
+             position: absolute;
+        }
+        div.project-text {
+            position: relative;
+        }
+
+    </style>
+
+
+    {% verbatim %}
+    <script id="user-tpl" type="text/x-handlebars-template">
+        {{#.}}
+        Logged in as<br/>
+        <img src="{{this.avatar}}" />
+        <h3>{{this.full_name}}</h3>
+        <a id="logout"class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-delete ui-btn-icon-left ui-btn-a"
+           data-transition="pop">Log out</a>
+        {{/.}}
+    </script>
+
+    <script id="login-tpl" type="text/x-handlebars-template">
+        <a href="#popupLogin" data-rel="popup" data-position-to="window"
+           class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-check ui-btn-icon-left ui-btn-a"
+           data-transition="pop">Sign in</a>
+    </script>
+
+
+    <script id="project-preview-tpl" type="text/x-handlebars-template">
+        {{#.}}
+        <li>
+            <a data-id="{{this.id}}">
+                <img src="{{this.image}}"/>
+                <h3>{{this.title}}</h3>
+                <p>{{this.amount_donated}} / {{this.amount_asked}}</p>
+            </a>
+        </li>
+        {{/.}}
+    </script>
+
+
+
+    <script id="project-tpl" type="text/x-handlebars-template">
+        {{#.}}
+        <div class="project-img">
+            <img src="{{this.image.large}}" />
+        </div>
+        <div class="project-text">
+            <h3>{{this.title}}</h3>
+            <p>{{this.country.name}} </p>
+            <div>
+                <img src="{{this.owner.avatar}}" />
+                {{this.owner.full_name}}
+            </div>
+
+            <p>{{this.pitch}}</p>
+
+
+            <form class="post-update" data-transition="pop" method="post">
+                <div style="padding:10px 20px;">
+                    <h3>Post update</h3>
+                    <input type="text" name="title" placeholder="Title"
+                           class="ui-input-text ui-corner-all ui-shadow-inset" /> <br />
+                    <textarea name="text" placeholder="Typ your message here"  data-clear-btn="true"
+                              class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset"></textarea><br />
+                    <input type="hidden" name="parent_id" value="{{this.id}}" />
+                    <input type="hidden" name="parent_type" value="project" />
+                    <label>
+                        <span class="ui-btn ui-btn-inline ui-icon-camera ui-btn-icon-left">Take Picture</span>
+                        <input name="image" type="file" accept="image/*" style="display:none" id="capture" capture="camera"/>
+                    </label>
+                    <button type="submit" class="ui-btn ui-btn-inline ui-icon-comment ui-btn-icon-left">
+                        Post
+                    </button>
+                </div>
+            </form>
+        </div>
+        {{/.}}
+    </script>
+
+
+    {% endverbatim %}
+</head>
+<body>
+    <div data-role="page" id="home" data-theme="a">
+        <div data-role="header" class="header">
+            <h3>Home</h3>
+            <a href="#projects">Projects</a>
+        </div>
+
+        <div data-role="main" class="ui-content">
+            <div id="user"></div>
+        </div>
+
+
+        <div data-role="popup" id="popupLogin" class="ui-corner-all" data-theme="a">
+            <form data-transition="pop" class="login" method="post">
+                        
+                <div style="padding:10px 20px;">
+                    <h3>Please sign in</h3>
+                    <input type="email" name="email" value="" placeholder="E-mail" data-theme="a"/>
+                    <input type="password" name="password" value="" placeholder="Password" data-theme="a"/>
+                                
+                    <button type="submit" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">
+                        Sign in
+                    </button>
+                            
+                </div>
+                    
+            </form>
+        </div>
+
+
+    </div>
+
+    <div data-role="page" id="projects" data-theme="a">
+        <div data-theme="a" data-role="header">
+            <a class="ui-btn ui-btn-inline ui-icon-home ui-btn-icon-left" href="#home">Home</a>
+            <h3>Projects</h3>
+        </div>
+        <div data-role="content">
+            <div class="example-wrapper" data-iscroll>
+                <ul data-role="listview"  id="project-list" data-theme="a"></ul>
+            </div>
+        </div>
+    </div>
+
+
+    <div data-role="page" id="project" data-theme="b">
+        <div data-role="header" class="header">
+            <a href="#projects">Projects</a>
+            <h3>Project</h3>
+        </div>
+
+        <div data-role="main" class="ui-content">
+            <div id="project-detail"></div>
+        </div>
+    </div>
+
+</body>
+</html>

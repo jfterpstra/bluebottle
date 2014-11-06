@@ -34,6 +34,7 @@ urlpatterns = patterns('',
 
     url(r'^documents/', include('bluebottle.utils.urls.main')),
     url(r'^embed/', include('bluebottle.widget.urls.core')),
+    url(r'^mobile/', include('bluebottle.mobile.urls.core')),
 
     # JSON Web Token based authentication for Django REST framework
     url(r'^api/token-auth/', 'rest_framework_jwt.views.obtain_jwt_token'),
