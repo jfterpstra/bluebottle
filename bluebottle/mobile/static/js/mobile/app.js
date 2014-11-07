@@ -21,17 +21,21 @@ $(document).ready(function(){
         .fadeOut( 400, function(){
             $(this).remove();
         });
-    }
+    };
 
-    $.ajax({
-        type: "GET",
-        url: "/api/bb_projects/previews?ordering=popularity&status=5",
-        success: function (data) {
-            $.each(data.results, function(i, row) {
-                $('#project-list').append(projectListHandler(row));
-            });
-        }
-    });
+    var loadProjects = function(search, page){
+        $.ajax({
+            type: "GET",
+            url: "/api/bb_projects/previews?ordering=popularity&status=5&page=" + page,
+            success: function (data) {
+                $.each(data.results, function(i, row) {
+                    $('#project-list').append(projectListHandler(row));
+                });
+                $("#projects").trigger("create");
+                $("#project-list").listview();
+            }
+        });
+    };
 
     var getUser = function(){
         $.ajax({
@@ -54,11 +58,14 @@ $(document).ready(function(){
         });
     };
     var getProject = function(id){
+        $('#project-detail').empty();
         $.ajax({
             type: "GET",
             url: "/api/bb_projects/projects/" + id,
             success: function (data) {
                 $('#project-detail').html(projectHandler(data));
+                $("#project").trigger("create");
+
                 var photo_id;
 
                 $('.post-update input[type=file]').on('change', function (event) {
@@ -132,6 +139,12 @@ $(document).ready(function(){
         $.mobile.changePage( "#project", { transition: "slide", changeHash: false });
     });
 
+    $(document).on('vclick', '#load-more-projects', function(){
+        projectPage++;
+        loadProjects(projectSearch, projectPage);
+    });
+
+
 
     $('.login').on('submit', function (e) {
         var credentials = $('.login').serialize();
@@ -141,6 +154,12 @@ $(document).ready(function(){
             getUser();
         });
     });
+
+    // Init some things
+
+    var projectPage = 1,
+        projectSearch = '';
+    loadProjects(projectSearch, projectPage);
 
     if (window.token) {
         getUser();

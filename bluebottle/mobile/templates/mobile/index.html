@@ -21,11 +21,32 @@
 
     <style>
         div.project-img {
-            -webkit-mask-image:-webkit-gradient(linear, right top, left top, from(rgba(0,0,0,0.4)), to(rgba(0,0,0,0)));
-             position: absolute;
+            -webkit-mask-image:-webkit-gradient(linear, right top, left top, from(rgba(0,0,0,0.8)), to(rgba(0,0,0,0)));
+             position: fixed;
         }
         div.project-text {
             position: relative;
+        }
+        .ui-slider.ui-mini input[type=number],
+        .ui-slider.ui-mini .ui-slider-handle {
+            display: none;
+        }
+        .initiator {
+            display: inline-block;
+            float: right;
+            margin: 10px;
+        }
+        .initiator img {
+            width: 90px;
+            margin-bottom: 6px;
+        }
+        .ui-listview>.ui-li-has-thumb>.ui-btn, .ui-listview>.ui-li-static.ui-li-has-thumb {
+            min-height: 3.625em;
+            padding: 0em 2em 0em 9em;
+        }
+        .ui-listview .ui-li-has-thumb>img:first-child, .ui-listview .ui-li-has-thumb>.ui-btn>img:first-child, .ui-listview .ui-li-has-thumb .ui-li-thumb {
+            max-height: 6em;
+            max-width: 8em;
         }
 
     </style>
@@ -51,11 +72,13 @@
 
     <script id="project-preview-tpl" type="text/x-handlebars-template">
         {{#.}}
-        <li>
-            <a data-id="{{this.id}}">
+        <li class="ui-btn ui-btn-icon-right ui-icon-carat-r ui-li-has-thumb">
+            <a data-id="{{this.id}}" class="ui-btn ui-btn-icon-right ui-icon-carat-r">
                 <img src="{{this.image}}"/>
                 <h3>{{this.title}}</h3>
-                <p>{{this.amount_donated}} / {{this.amount_asked}}</p>
+                <input type="range" name="slider-fill" id="slider-fill" value="{{this.amount_donated}}" min="0"
+                       max="{{this.amount_asked}}" data-highlight="true" data-mini="true" data-disabled="true" />
+                <p>{{this.amount_donated}} of {{this.amount_asked}} raised.</p>
             </a>
         </li>
         {{/.}}
@@ -69,15 +92,15 @@
             <img src="{{this.image.large}}" />
         </div>
         <div class="project-text">
+            <span class="initiator">
+                <img src="{{this.owner.avatar}}"  />
+                <br />
+                {{this.owner.full_name}}
+            </span>
             <h3>{{this.title}}</h3>
             <p>{{this.country.name}} </p>
-            <div>
-                <img src="{{this.owner.avatar}}" />
-                {{this.owner.full_name}}
-            </div>
 
             <p>{{this.pitch}}</p>
-
 
             <form class="post-update" data-transition="pop" method="post">
                 <div style="padding:10px 20px;">
@@ -143,9 +166,12 @@
         </div>
         <div data-role="content">
             <div class="example-wrapper" data-iscroll>
-                <ul data-role="listview"  id="project-list" data-theme="a"></ul>
+                <ul data-role="listview" class="ui-list-view" id="project-list" data-theme="a">
+
+                </ul>
             </div>
         </div>
+        <button id="load-more-projects">load more</button>
     </div>
 
 

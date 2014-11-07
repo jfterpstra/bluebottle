@@ -17,6 +17,8 @@ class BaseDonation(models.Model):
     fundraiser = models.ForeignKey(settings.FUNDRAISERS_FUNDRAISER_MODEL, verbose_name=_("Fundraiser"), null=True, blank=True)
     order = models.ForeignKey(settings.ORDERS_ORDER_MODEL, verbose_name=_("Order"), related_name='donations', null=True, blank=True)
 
+    donation_type = models.CharField(max_length=30, blank=True, null=True, default='one-off')
+
     created = CreationDateTimeField(_("Created"))
     updated = ModificationDateTimeField(_("Updated"))
     completed = models.DateTimeField(_("Ready"), blank=True, editable=False, null=True)
