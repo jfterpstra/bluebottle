@@ -48,7 +48,6 @@
             max-height: 6em;
             max-width: 8em;
         }
-
     </style>
 
 
@@ -58,7 +57,7 @@
         Logged in as<br/>
         <img src="{{this.avatar}}" />
         <h3>{{this.full_name}}</h3>
-        <a id="logout"class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-delete ui-btn-icon-left ui-btn-a"
+        <a id="logout"c lass="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-delete ui-btn-icon-left ui-btn-a"
            data-transition="pop">Log out</a>
         {{/.}}
     </script>
@@ -73,7 +72,7 @@
     <script id="project-preview-tpl" type="text/x-handlebars-template">
         {{#.}}
         <li class="ui-btn ui-btn-icon-right ui-icon-carat-r ui-li-has-thumb">
-            <a data-id="{{this.id}}" class="ui-btn ui-btn-icon-right ui-icon-carat-r">
+            <a data-id="{{this.id}}" class="ui-btn ui-btn-icon-right ui-icon-carat-r project-item">
                 <img src="{{this.image}}"/>
                 <h3>{{this.title}}</h3>
                 <input type="range" name="slider-fill" id="slider-fill" value="{{this.amount_donated}}" min="0"
@@ -84,6 +83,21 @@
         {{/.}}
     </script>
 
+
+
+    <script id="thank-you-tpl" type="text/x-handlebars-template">
+        {{#.}}
+        <br/>
+        <br/>
+        <br/>
+        <h2>You donated &euro; {{this.order.total}} to</h2>
+        <a data-id="{{this.project.id}}" class="ui-btn ui-btn-icon-right ui-icon-carat-r">
+            <img src="{{this.project.image}}"/>
+            <h3>{{this.project.title}}</h3>
+            <p>{{this.project.amount_donated}} of {{this.project.amount_asked}} raised.</p>
+        </a>
+        {{/.}}
+    </script>
 
 
     <script id="project-tpl" type="text/x-handlebars-template">
@@ -102,24 +116,78 @@
 
             <p>{{this.pitch}}</p>
 
-            <form class="post-update" data-transition="pop" method="post">
-                <div style="padding:10px 20px;">
-                    <h3>Post update</h3>
-                    <input type="text" name="title" placeholder="Title"
-                           class="ui-input-text ui-corner-all ui-shadow-inset" /> <br />
-                    <textarea name="text" placeholder="Typ your message here"  data-clear-btn="true"
-                              class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset"></textarea><br />
-                    <input type="hidden" name="parent_id" value="{{this.id}}" />
-                    <input type="hidden" name="parent_type" value="project" />
-                    <label>
-                        <span class="ui-btn ui-btn-inline ui-icon-camera ui-btn-icon-left">Take Picture</span>
-                        <input name="image" type="file" accept="image/*" style="display:none" id="capture" capture="camera"/>
-                    </label>
-                    <button type="submit" class="ui-btn ui-btn-inline ui-icon-comment ui-btn-icon-left">
-                        Post
-                    </button>
-                </div>
-            </form>
+            <a href="#popupPost" data-rel="popup" data-position-to="window"
+               class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-comment ui-btn-icon-left ui-btn-a"
+               data-transition="pop">Write update</a>
+
+            <a href="#popupDonation" data-rel="popup" data-position-to="window"
+               class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-heart ui-btn-icon-left ui-btn-a"
+               data-transition="pop">Donate</a>
+
+            <div data-role="popup" id="popupPost">
+                <a href="#" data-rel="back" data-role="button" data-icon="delete"
+                   data-iconpos="notext" class="ui-btn-right">Close</a>
+                <form class="post-update" data-transition="pop" method="post">
+                    <div style="padding:10px 20px;">
+                        <h3>Post update</h3>
+                        <input type="text" name="title" placeholder="Title"
+                               class="ui-input-text ui-corner-all ui-shadow-inset" /> <br />
+                        <textarea name="text" placeholder="Typ your message here"  rows="6" cols="50" data-clear-btn="true"
+                                  class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset"></textarea><br />
+                        <input type="hidden" name="parent_id" value="{{this.id}}" />
+                        <input type="hidden" name="parent_type" value="project" />
+                        <label>
+                            <span class="ui-btn ui-btn-inline ui-icon-camera ui-btn-icon-left">Take Picture</span>
+                            <input name="image" data-role="none" type="file" accept="image/*" style="display:none" id="capture" capture="camera"/>
+                        </label>
+                        <button type="submit" class="ui-btn ui-btn-inline ui-icon-comment ui-btn-icon-left">
+                            Post
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div data-role="popup" id="popupDonation">
+                <a href="#" data-rel="back" data-role="button" data-icon="delete"
+                   data-iconpos="notext" class="ui-btn-right">Close</a>
+                <form class="donation" data-transition="pop" method="post">
+                    <input type="text" name="project" value="{{this.id}}" />
+                    <div style="padding:10px 20px;">
+                        <h3>Donate with iDEAL</h3>
+                        <b>{{this.title}}</b>
+                        <fieldset data-role="controlgroup" data-type="horizontal">
+                            <legend>Choose amount</legend>
+                                <input type="radio" name="amount" id="radio-choice-1" value="10" checked="checked" />
+                                <label for="radio-choice-1">10 &euro;</label>
+
+                                <input type="radio" name="amount" id="radio-choice-2" value="25"  />
+                                <label for="radio-choice-2">25 &euro;</label>
+
+                                <input type="radio" name="amount" id="radio-choice-3" value="50"  />
+                                <label for="radio-choice-3">50 &euro;</label>
+
+                                <input type="radio" name="amount" id="radio-choice-4" value="100"  />
+                                <label for="radio-choice-4">100 &euro;</label>
+                        </fieldset>
+                        <select name="bank">
+                            <option value="">Select your bank</option>
+                            <option value="ABNAMRO">Abn Amro</option>
+                            <option value="ASN">ASN Bank</option>
+                            <option value="ING">ING</option>
+                            <option value="KBC">KBC</option>
+                            <option value="KNAB">Knab</option>
+                            <option value="RABO">Rabobank</option>
+                            <option value="TRIODOS">Triodos Bank</option>
+                            <option value="VANLANSCHOT">van Lanschot</option>
+                        </select>
+                        <button type="submit" class="ui-btn ui-btn-inline ui-icon-arrow-r ui-btn-icon-right">
+                            Payment
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+
         </div>
         {{/.}}
     </script>
@@ -131,7 +199,7 @@
     <div data-role="page" id="home" data-theme="a">
         <div data-role="header" class="header">
             <h3>Home</h3>
-            <a href="#projects">Projects</a>
+            <a class="ui-btn ui-btn-inline ui-icon-bullets ui-btn-icon-left" href="#projects">Projects</a>
         </div>
 
         <div data-role="main" class="ui-content">
@@ -160,13 +228,13 @@
     </div>
 
     <div data-role="page" id="projects" data-theme="a">
-        <div data-theme="a" data-role="header">
+        <div data-theme="a" data-role="header" data-position="fixed">
             <a class="ui-btn ui-btn-inline ui-icon-home ui-btn-icon-left" href="#home">Home</a>
             <h3>Projects</h3>
         </div>
         <div data-role="content">
             <div class="example-wrapper" data-iscroll>
-                <ul data-role="listview" class="ui-list-view" id="project-list" data-theme="a">
+                <ul data-role="listview" class="ui-list-view" id="project-list" data-theme="b">
 
                 </ul>
             </div>
@@ -176,13 +244,24 @@
 
 
     <div data-role="page" id="project" data-theme="b">
-        <div data-role="header" class="header">
-            <a href="#projects">Projects</a>
+        <div data-role="header" class="header" data-position="fixed">
+            <a class="ui-btn ui-btn-inline ui-icon-bullets ui-btn-icon-left" href="#projects">Projects</a>
             <h3>Project</h3>
         </div>
 
         <div data-role="main" class="ui-content">
             <div id="project-detail"></div>
+        </div>
+    </div>
+
+
+    <div data-role="page" id="thanks" data-theme="b">
+        <div data-role="header" class="header" data-position="fixed">
+            <a class="ui-btn ui-btn-inline ui-icon-bullets ui-btn-icon-left" href="#projects">Projects</a>
+            <h3>Thanks for your support!</h3>
+        </div>
+        <div data-role="main" class="ui-content">
+            <div id="order-detail"></div>
         </div>
     </div>
 
