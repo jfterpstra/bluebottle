@@ -95,7 +95,7 @@
                 <aside>
                     {{#if isSupportable}}
                         <div class="project-action">
-                            <a {{action 'addDonation' this}} class="btn btn-primary"> {% trans "Support project" %}</a>
+                            <a {{action 'openInBox' 'modalTestOne'}} class="btn btn-primary"> {% trans "Support project" %}</a>
                             {{view 'App.MpesaDonateView' class="mpesa-donate" }}
                         </div>
                     {{/if}}

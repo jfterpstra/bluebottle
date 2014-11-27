@@ -700,5 +700,42 @@ App.ApplicationView = Em.View.reopen(App.EventMixin, {
             $('.mobile-nav-holder').addClass('is-scrolled');
         }
     }
-})
+});
 
+// Test code for modals
+App.ModalTestOneController = Em.ObjectController.extend();
+App.ModalTestTwoController = Em.ObjectController.extend();
+App.ModalTestThreeController = Em.ObjectController.extend();
+App.ModalTestFourController = Em.ObjectController.extend();
+App.ModalTestFiveController = Em.ObjectController.extend();
+
+App.ModalTestOneView = Em.View.extend({
+    template: Ember.Handlebars.compile([
+        '<a {{action "modalSlide" "modalTestTwo"}}>Slide</a>',
+        '<a {{action "modalFlip" "modalTestTwo"}}>Flip</a>',
+        '<a {{action "modalZoom" "modalTestTwo"}}>Zoom</a>',
+        '<a {{action "modalBack"}}>Back</a>'].join('\n'))
+});
+App.ModalTestTwoView = Em.View.extend({
+    template: Ember.Handlebars.compile([
+        '<a {{action "modalSlide" "modalTestThree"}}>Slide</a>',
+        '<a {{action "modalFlip" "modalTestThree"}}>Flip</a>',
+        '<a {{action "modalZoom" "modalTestThree"}}>Zoom</a>',
+        '<a {{action "modalBack"}}>Back</a>'].join('\n'))
+});
+App.ModalTestThreeView = Em.View.extend({
+    template: Ember.Handlebars.compile([
+        '<a {{action "modalSlide" "modalTestFour"}}>Slide</a>',
+        '<a {{action "modalFlip" "modalTestFour"}}>Flip</a>',
+        '<a {{action "modalZoom" "modalTestFour"}}>Zoom</a>',
+        '<a {{action "modalBack"}}>Back</a>'].join('\n'))
+});
+App.ModalTestFourView = Em.View.extend({
+    template: Ember.Handlebars.compile([
+        '<a {{action "modalSlide" "modalTestOne"}}>Slide</a>',
+        '<a {{action "modalFlip" "modalTestOne"}}>Flip</a>',
+        '<a {{action "modalZoom" "modalTestOne"}}>Zoom</a>',
+        '<a {{action "modalBack"}}>Back</a>'].join('\n'))
+});
+
+App.ModalTestFiveView = Em.View.extend();

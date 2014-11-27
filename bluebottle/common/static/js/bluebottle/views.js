@@ -1,6 +1,10 @@
 /* Views */
 
-App.ModalContainerView = BB.ModalContainerView.extend();
+App.ModalContainerView = BB.ModalContainerView.extend({
+    modalViewClass: App.ModalView,
+});
+
+App.ModalView = BB.ModalView.extend();
 
 App.LanguageView = Em.View.extend({
     templateName: 'language',

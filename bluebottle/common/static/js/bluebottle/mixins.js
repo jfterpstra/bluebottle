@@ -355,7 +355,7 @@ App.SaveDonationMixin = Em.Mixin.create({
         if (!donation.get('isDirty')) {
           var payment = App.MyOrderPayment.createRecord({order: order});
           
-          this.send('modalSlideLeft', 'orderPayment', payment);
+          this.send('modalScale', 'orderPayment', payment);
         }
 
         // Set is loading property until success or error response
@@ -365,7 +365,7 @@ App.SaveDonationMixin = Em.Mixin.create({
           // Success
           function() {
               var payment = App.MyOrderPayment.createRecord({order: order});
-              _this.send('modalSlideLeft', 'orderPayment', payment);
+              _this.send('modalScale', 'orderPayment', payment);
           },
           // Failure
           function(){
