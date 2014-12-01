@@ -7,5 +7,5 @@
 App.StandardTabController = Em.ObjectController.extend(App.ControllerObjectSaveMixin, App.ControllerObjectStatusMixin, App.SaveOnExitMixin, {});
 
 // Extend BB Modal
-App.ModalContainerController = BB.ModalContainerController.extend();
-App.ModalController = BB.ModalController.extend();
+App.ModalContainerController = BB.ModalContainerController.extend({});
+App.ModalController = BB.ModalController.extend({});

@@ -711,31 +711,34 @@ App.ModalTestFiveController = Em.ObjectController.extend();
 
 App.ModalTestOneView = Em.View.extend({
     template: Ember.Handlebars.compile([
+        'Test Modal One',
         '<a {{action "modalSlide" "modalTestTwo"}}>Slide</a>',
         '<a {{action "modalFlip" "modalTestTwo"}}>Flip</a>',
-        '<a {{action "modalZoom" "modalTestTwo"}}>Zoom</a>',
-        '<a {{action "modalBack"}}>Back</a>'].join('\n'))
+        '<a {{action "modalZoom" "modalTestTwo"}}>Zoom</a>'].join('\n'))
 });
 App.ModalTestTwoView = Em.View.extend({
     template: Ember.Handlebars.compile([
+        'Test Modal Two',
         '<a {{action "modalSlide" "modalTestThree"}}>Slide</a>',
         '<a {{action "modalFlip" "modalTestThree"}}>Flip</a>',
         '<a {{action "modalZoom" "modalTestThree"}}>Zoom</a>',
-        '<a {{action "modalBack"}}>Back</a>'].join('\n'))
+        '<a {{action "modalBack" "modalTestOne"}}>Back</a>'].join('\n'))
 });
 App.ModalTestThreeView = Em.View.extend({
     template: Ember.Handlebars.compile([
+        'Test Modal Three',
         '<a {{action "modalSlide" "modalTestFour"}}>Slide</a>',
         '<a {{action "modalFlip" "modalTestFour"}}>Flip</a>',
         '<a {{action "modalZoom" "modalTestFour"}}>Zoom</a>',
-        '<a {{action "modalBack"}}>Back</a>'].join('\n'))
+        '<a {{action "modalBack" "modalTestTwo"}}>Back</a>'].join('\n'))
 });
 App.ModalTestFourView = Em.View.extend({
     template: Ember.Handlebars.compile([
+        'Test Modal Four',
         '<a {{action "modalSlide" "modalTestOne"}}>Slide</a>',
         '<a {{action "modalFlip" "modalTestOne"}}>Flip</a>',
         '<a {{action "modalZoom" "modalTestOne"}}>Zoom</a>',
-        '<a {{action "modalBack"}}>Back</a>'].join('\n'))
+        '<a {{action "modalBack" "modalTestThree"}}>Back</a>'].join('\n'))
 });
 
 App.ModalTestFiveView = Em.View.extend();

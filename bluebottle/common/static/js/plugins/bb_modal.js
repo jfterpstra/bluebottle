@@ -57,10 +57,13 @@ BB.ModalMixin = Em.Mixin.create({
             this.send('modalSlide', name, context);
         },
 
+        modalBack: function (name) {
+            this.get('modalContainer').jumpTo(name);
+        },
+
         modalSlide: function (name, context) {
             // this.get('modalContainer')
             // var newController = this.controllerFor(name);
-
             this.get('modalContainer').push(name, context, 'slide');
         }
     },
@@ -347,12 +350,11 @@ BB.ModalContainerController = Em.ArrayProxy.extend(Em.ControllerMixin, BB.ModalC
     currentModalController: null,
     type: null,
     modalControllersBinding: 'content',
-    modalViewClass: BB.ModalView,
 
     init: function() {
         this._super();
 
-        this.set('_subControllers', Ember.A());
+        this.set('_modalControllers', Ember.A());
     },
 
     content: Ember.computed(function () {
@@ -367,15 +369,75 @@ BB.ModalContainerController = Em.ArrayProxy.extend(Em.ControllerMixin, BB.ModalC
             throw new Error('An instance of BB.ModalContainerController requires a container');
         }        
 
+        this._renderModal(controllerClass, object, transition);
+    },
+
+    jumpTo: function (controllerClass, object, transition) {
+        // First we need to find the matching modal controller
+        var previousController = this.get('currentController'),
+            modalController = this._matchModalController(controllerClass);
+
+        // Found a match!
+        if (modalController) {
+            this._renderModal(controllerClass, object, transition);
+
+            // And pop off any controllers between the matching controller
+            // and the previous controller.
+            var content = this.get('content'),
+                previousIndex = content.indexOf(previousController),
+                currentIndex = content.indexOf(modalController);
+
+            for(i = currentIndex + 1; i <= previousIndex; i++) {
+                this._destoryController(i);
+            }
+        } else {
+            
+        }
+
+    },
+
+    _destoryController: function (index) {
+        this.get('content').removeAt(index, 1);
+    },
+
+    _renderModal: function (controllerClass, object, transition) {
         // Check if the class exists. The modalContainer controller
         // has an array of modalControllers and each of these has 
         // a 'frontController' and 'backController' property which 
         // is what needs to be matched against the class name passed.
-        controller = this.modalControllerFor(controllerClass, object, transition);
+        modalController = this.modalControllerFor(controllerClass, object, transition);
+
+        this.container.lookup('route:application').render('modal', {
+            into: 'modalContainer',
+            outlet: 'currentModal',
+            controller: modalController
+        });
+
+        // Set the controller on the front side of the modal
+        modalController.setController('modalFront', controllerClass);
+    },
+
+    _matchControllerClass: function (targetController, controllerString) {
+        return targetController && targetController.constructor.toString() == controllerString;
+    },
+
+    _matchModalController: function (controllerClass) {
+        var _this = this,
+            fullName = "controller:" + controllerClass,
+            subControllerFactory = this.get('container').lookupFactory(fullName),
+            subControllerStr = subControllerFactory.toString();
+
+        var modalController = this.get('model').find(function (modal) {
+            return _this._matchControllerClass(modal.get('frontController'), subControllerStr) || 
+                    _this._matchControllerClass(modal.get('backController'), subControllerStr)
+        });
+
+        return modalController;
     },
 
     modalControllerFor: function(controllerClass, object, transition) {
-        var container = this.get('container'),
+        var _this = this,
+            container = this.get('container'),
             modalControllers = this.get('model'),
             fullName = "controller:" + controllerClass,
             factory, fullName;
@@ -384,23 +446,19 @@ BB.ModalContainerController = Em.ArrayProxy.extend(Em.ControllerMixin, BB.ModalC
             throw new Error('Could not resolve sub controller: "' + controllerClass + '"');
         }
         
-        var subControllerFactory = container.lookupFactory(fullName),
-            subControllerStr = subControllerFactory.toString();
-
-        var modalController = this.get('model').find(function (modal) {
-            return modal.get('frontController').toString() == subControllerStr || modal.get('backController').toString() == subControllerStr
-        });
+        var modalController = this._matchModalController(controllerClass);
 
         if (modalController) {
             this.set('currentController', modalController);
-            return modalContainer;
+            return modalController;
         }
+        
 
         // Create a new modalController unless the transition is a flip
         // In the case of flipping then we use the other side of the 
         // current modalController.
         if (transition != 'flip') {
-            modalController = BB.ModalController.create({
+            modalController = container.lookupFactory('controller:modal').create({
                 target: this,
                 parentController: this.get('parentController') || this
             });
@@ -415,6 +473,8 @@ BB.ModalContainerController = Em.ArrayProxy.extend(Em.ControllerMixin, BB.ModalC
                 modalController = currentModalController;
             }
         }
+
+        this.set('currentController', modalController);
 
         // subController = subControllerFactory.create({
         //     target: modalController,
@@ -473,21 +533,35 @@ BB.ModalContainerView = Em.View.extend(Ember.TargetActionSupport,{
     
     template: Ember.Handlebars.compile([
         '<div class="modal-fullscreen-background is-active">',
-            '{{#each modal in modalControllers}}',
-                '+++++{{render modal}}-------',
-            '{{/each}}',
+            '{{outlet "currentModal"}}',
         '</div>'].join("\n"))
 });
 
 BB.ModalController = Em.ObjectController.extend({
-    modals: null
+    modals: null,
+    frontName: null,
+    frontController: null,
+    backController: null,
+
+    setController: function (modalSide, controllerClass) {
+        // Create the controller to be inserted into the modal
+        var contentController = this.container.lookupFactory('controller:' + controllerClass).create();
+
+        this.container.lookup('route:application').render(controllerClass, {
+            into: 'modal',
+            outlet: modalSide,
+            controller: contentController
+        });
+
+        this.set('frontController', contentController);
+    }
 });
 
 BB.ModalView = Em.View.extend(Ember.TargetActionSupport, {
     tagName: null,
 
     template: Ember.Handlebars.compile([
-        '<div {{bindAttr class="type: :modal-fullscreen-container"}}>',
+        '<div {{bindAttr class=":normal :modal-fullscreen-container"}}>',
             '<div id="card">',
                 '<div class="front">',
                     '<div class="modal-fullscreen-item">{{outlet "modalFront"}}</div>',
