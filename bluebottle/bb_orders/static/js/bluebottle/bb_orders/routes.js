@@ -95,7 +95,7 @@ App.OrderRoute = Em.Route.extend({
     redirect: function(model) {
         var _this = this,
             order = model,
-            donation = order.get('donations.firstObject');
+            donation = order.get('donations.firstObject'),
             status = order.get('status'),
             fundraiser = donation.get('fundraiser'),
             project = donation.get('project'),
@@ -105,12 +105,10 @@ App.OrderRoute = Em.Route.extend({
             switch (status) {
                 case 'success':
                     _this._handleSuccess(donation);
-
                     break;
 
                 case 'pending':
                     _this._handleSuccess(donation);
-
                     break;
 
                 case 'failed':
