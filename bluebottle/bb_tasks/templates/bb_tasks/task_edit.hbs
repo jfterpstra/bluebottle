@@ -51,7 +51,9 @@
                             {{/if}}
                         </li>
 
-                        {% bb_component 'bb-datepicker' label=_('Deadline') minDate='0' maxDate='12M' valueBinding='deadline' errors='errors.deadline' %}
+                        {{# if project.deadline}}
+                            {% bb_component 'bb-date-picker' name='deadline' label=_('Task deadline') placeholder=_('Date before which the task should be executed') hint=_('You can only pick a date before the deadline of the project') minDate='0' maxDate='project.deadline' valueBinding='deadline' errors='errors.deadline' %}
+                        {{/if}}
 
                         {% bb_component 'bb-text-area' label=_('Description') valueBinding='description' rows='5' errors='errors.description' placeholder=_('What do you need? Give a clear description of the task') %}
 
