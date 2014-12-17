@@ -8,10 +8,11 @@ def installed_apps_context_processor(request):
     for app in settings.INSTALLED_APPS:
         if app[:11] == 'bluebottle.':
             # Ignore some standard apps
-            if app[11:] not in ['common', 'admin_dashboard', 'contentplugins', 'auth', 'redirects',
+            if app[11:] not in ['common', 'admin_dashboard', 'contentplugins', 'auth', 'redirects', 'core',
                                 'donations', 'orders', 'fundraisers', 'tasks', 'bb_payouts', 'payouts',
                                 'payments_logger', 'widget', 'bb_follow', 'members', 'projects', 'payouts',
-                                'organizations', 'tasks', 'statistics', 'home', 'recurring_donations']:
+                                'organizations', 'tasks', 'statistics', 'home', 'recurring_donations',
+                                'bluebottle_salesforce', 'bluebottle_dashboard', 'hbtemplates', 'crawlable']:
                 bb_apps.append(app[11:])
     context = {
         'installed_apps': settings.INSTALLED_APPS,

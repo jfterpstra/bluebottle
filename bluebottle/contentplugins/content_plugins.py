@@ -3,12 +3,8 @@ ContentItem plugin definitions for django-fluent-contents
 """
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
-
-
 from fluent_contents.extensions import plugin_pool, ContentPlugin
-
-
-from .models import PictureItem
+from apps.contentplugins.models import PictureItem
 
 
 @plugin_pool.register

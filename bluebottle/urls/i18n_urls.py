@@ -26,4 +26,10 @@ urlpatterns = patterns(
 
     # account login/logout, password reset, and password change
     url(r'^accounts/', include('django.contrib.auth.urls', namespace='accounts')),
+
+    # handlebar templates
+    url(r'^templates/', include('bluebottle.hbtemplates.urls')),
+
+    # Urls for partner sites
+    url(r'^pp/', include('bluebottle.partners.urls.partners')),
 )
