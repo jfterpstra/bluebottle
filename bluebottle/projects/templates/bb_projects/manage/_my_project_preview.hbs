@@ -42,12 +42,6 @@
                         <span class="flaticon solid wallet-1"></span>
                         {% trans "Donations" %}
                     {{/link-to}}
-                    {{#if project.mchanga_account}}
-                        {{#link-to "projectMpesaList" project.id class="btn-link right"}}
-                            <span class="flaticon solid wallet-1"></span>
-                            {% trans "Mpesa Payments" %}
-                        {{/link-to}}
-                    {{/if}}
                 {{/if}}
                 {{#link-to "project" project.id class="btn-link right"}}
                     <span class="flaticon solid pencil-3"></span>

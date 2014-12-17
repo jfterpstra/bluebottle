@@ -26,8 +26,8 @@ class StoryField(serializers.WritableField):
 
     def from_native(self, data):
         """ Saving the story text """
-        #Convert &gt; and &lt; back to HTML tags so Beautiful Soup can clean unwanted tags.
-        #Script tags are sent by redactor as "&lt;;script&gt;;", Iframe tags have just one semicolon.
+        # Convert &gt; and &lt; back to HTML tags so Beautiful Soup can clean unwanted tags.
+        # Script tags are sent by redactor as "&lt;;script&gt;;", Iframe tags have just one semicolon.
         data = data.replace("&lt;;", "<").replace("&gt;;", ">").replace("&lt;", "<").replace("&gt;", ">")
         soup = BeautifulSoup(data, "html.parser")
         [s.extract() for s in soup(['script', 'iframe'])]
@@ -53,7 +53,7 @@ class ProjectSerializer(BaseProjectSerializer):
     class Meta(BaseProjectSerializer):
         model = BaseProjectSerializer.Meta.model
         fields = BaseProjectSerializer.Meta.fields + ('allow_overfunding', 'task_count', 'amount_asked', 'amount_donated', 'amount_needed',
-                                                      'story', 'status', 'deadline', 'latitude', 'longitude', 'video_url', 'video_html', 'partner', 'mchanga_account')
+                                                      'story', 'status', 'deadline', 'latitude', 'longitude', 'video_url', 'video_html', 'partner')
 
 
 class ProjectPreviewSerializer(BaseProjectPreviewSerializer):
@@ -90,7 +90,7 @@ class ManageProjectSerializer(BaseManageProjectSerializer):
         model = BaseManageProjectSerializer.Meta.model
         fields = BaseManageProjectSerializer.Meta.fields + ('amount_asked', 'amount_donated', 'amount_needed',
                                                             'video_url', 'video_html', 'partner',
-                                                            'story', 'budget_lines', 'deadline', 'latitude', 'longitude', 'mchanga_account')
+                                                            'story', 'budget_lines', 'deadline', 'latitude', 'longitude')
 
 
 class ProjectSupporterSerializer(serializers.ModelSerializer):

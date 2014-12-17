@@ -11,7 +11,7 @@ def installed_apps_context_processor(request):
             if app[11:] not in ['common', 'admin_dashboard', 'contentplugins', 'auth', 'redirects',
                                 'donations', 'orders', 'fundraisers', 'tasks', 'bb_payouts', 'payouts',
                                 'payments_logger', 'widget', 'bb_follow', 'members', 'projects', 'payouts',
-                                'organizations', 'tasks']:
+                                'organizations', 'tasks', 'statistics', 'home', 'recurring_donations']:
                 bb_apps.append(app[11:])
     context = {
         'installed_apps': settings.INSTALLED_APPS,
