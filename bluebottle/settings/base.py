@@ -137,77 +137,140 @@ JWT_AUTH = {
 JWT_TOKEN_RENEWAL_DELTA = datetime.timedelta(minutes=30)
 
 INSTALLED_APPS = (
+    # Django apps
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
-    'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
 
-    # BlueBottle dependencies.
-    'compressor',
-    'registration',
-    'rest_framework',
-    'taggit',
+    # 3rd party apps
+    'django_extensions',
+    'django_extensions.tests',
+    'raven.contrib.django.raven_compat',
+    'djcelery',
     'south',
+    # 'django_nose',
+    'compressor',
     'sorl.thumbnail',
+    'taggit',
+    'taggit_autocomplete_modified',
+    'micawber.contrib.mcdjango',  # Embedding videos
+    'templatetag_handlebars',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'polymorphic',
+    'registration',
+    'filetransfers',
+    'loginas',
+    #'social_auth',
+    'social.apps.django_app.default',
 
-    # BlueBottle applications.
+    # Widget
+    'bluebottle.widget',
+
+    # CMS page contents
+    'fluent_contents',
+    'fluent_contents.plugins.text',
+    'fluent_contents.plugins.oembeditem',
+    'fluent_contents.plugins.rawhtml',
+    'django_wysiwyg',
+    'tinymce',
+    'statici18n',
+    'django.contrib.humanize',
+    'django_tools',
+
+    # FB Auth
+    'bluebottle.auth',
+
+    # Password auth from old PHP site.
+    'legacyauth',
+
+
+    # Apps moved to Bluebottle
+    'bluebottle.members',
+    'bluebottle.projects',
+    'bluebottle.tasks',
+    'bluebottle.organizations',
+    'bluebottle.payouts',
+    'bluebottle.homepage',
+    'bluebottle.statistics',
+    'bluebottle.recurring_donations',
+    'bluebottle.bluebottle_salesforce',
+    'bluebottle.bluebottle_dashboard',
+    'bluebottle.contentplugins',
+    'bluebottle.hbtemplates',
+    'bluebottle.partners',
+    'bluebottle.crawlable',
+    'bluebottle.core',
+
+    # Plain Bluebottle apps
+    'bluebottle.wallposts',
+    'bluebottle.utils',
+    'bluebottle.common',
+    'bluebottle.contentplugins',
+    'bluebottle.contact',
+    'bluebottle.geo',
+    'bluebottle.pages',
+    'bluebottle.news',
+    'bluebottle.slides',
+    'bluebottle.quotes',
+    'bluebottle.payments',
+    'bluebottle.payments_docdata',
+    'bluebottle.payments_logger',
+    'bluebottle.payments_voucher',
+    'bluebottle.redirects',
+    'bluebottle.bb_follow',
+
+    # Bluebottle apps with abstract models
     'bluebottle.bb_accounts',
     'bluebottle.bb_organizations',
     'bluebottle.bb_projects',
     'bluebottle.bb_tasks',
     'bluebottle.bb_fundraisers',
-    'bluebottle.bb_orders',
     'bluebottle.bb_donations',
+    'bluebottle.bb_orders',
     'bluebottle.bb_payouts',
-
-    # Other Bb apps
-    'bluebottle.common',
-    'bluebottle.contact',
-    'bluebottle.contentplugins',
-    'bluebottle.geo',
-    'bluebottle.news',
-    'bluebottle.pages',
-    'bluebottle.quotes',
-    'bluebottle.slides',
-    'bluebottle.redirects',
-    'bluebottle.terms',
-    'bluebottle.utils',
-    'bluebottle.wallposts',
 
     # Basic Bb implementations
     'bluebottle.fundraisers',
-    'bluebottle.orders',
     'bluebottle.donations',
-    'bluebottle.payouts',
+    'bluebottle.orders',
 
-    'bluebottle.payments',
-    'bluebottle.payments_docdata',
-    'bluebottle.payments_mock',
-    'bluebottle.payments_logger',
-    'bluebottle.payments_voucher',
-
-    'bluebottle.bb_follow',
-
-    # Test Bb implementations
-    'bluebottle.test',
-
-    # Modules required by BlueBottle
-    'fluent_contents',
-    'fluent_contents.plugins.text',
-    'fluent_contents.plugins.oembeditem',
-    'fluent_contents.plugins.rawhtml',
-
-    'django_wysiwyg',
-    'templatetag_handlebars',
-
-    'raven.contrib.django.raven_compat',
+    # Custom dashboard
+    'fluent_dashboard',
+    'admin_tools',
+    'admin_tools.theming',
+    'admin_tools.menu',
+    'admin_tools.dashboard',
+    'django.contrib.admin',
+    'django.contrib.admindocs',
 )
+
+EMBER_APPS = [
+    'bb_accounts',
+    'homepage',
+    'partners',
+    'wallposts',
+    'utils',
+    'contact',
+    'geo',
+    'pages',
+    'news',
+    'slides',
+    'quotes',
+    'payments',
+    'payments_docdata',
+    'payments_voucher',
+    'bb_organizations',
+    'bb_projects',
+    'bb_tasks',
+    'bb_fundraisers',
+    'bb_donations',
+    'bb_orders'
+]
+
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
@@ -271,21 +334,21 @@ LOGGING = {
 
 
 # Define the models to use for testing
-AUTH_USER_MODEL = 'test.TestBaseUser'
+AUTH_USER_MODEL = 'members.Member'
 
-PROJECTS_PROJECT_MODEL = 'test.TestBaseProject'
-PROJECTS_PHASELOG_MODEL = 'test.TestBaseProjectPhaseLog'
+PROJECTS_PROJECT_MODEL = 'projects.Project'
+PROJECTS_PHASELOG_MODEL = 'projects.ProjectPhaseLog'
 
 FUNDRAISERS_FUNDRAISER_MODEL = 'fundraisers.Fundraiser'
 
-TASKS_TASK_MODEL = 'test.TestTask'
-TASKS_SKILL_MODEL = 'test.TestSkill'
-TASKS_TASKMEMBER_MODEL = 'test.TestTaskMember'
-TASKS_TASKFILE_MODEL = 'test.TestTaskFile'
+TASKS_TASK_MODEL = 'tasks.Task'
+TASKS_SKILL_MODEL = 'tasks.Skill'
+TASKS_TASKMEMBER_MODEL = 'tasks.TaskMember'
+TASKS_TASKFILE_MODEL = 'tasks.TaskFile'
 
-ORGANIZATIONS_ORGANIZATION_MODEL = 'test.TestOrganization'
-ORGANIZATIONS_DOCUMENT_MODEL = 'test.TestOrganizationDocument'
-ORGANIZATIONS_MEMBER_MODEL = 'test.TestOrganizationMember'
+ORGANIZATIONS_ORGANIZATION_MODEL = 'organizations.Organization'
+ORGANIZATIONS_DOCUMENT_MODEL = 'organizations.OrganizationDocument'
+ORGANIZATIONS_MEMBER_MODEL = 'organizations.OrganizationMember'
 
 DONATIONS_DONATION_MODEL = 'donations.Donation'
 ORDERS_ORDER_MODEL = 'orders.Order'

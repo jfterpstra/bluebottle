@@ -7,6 +7,11 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ('bb_projects', '0001_initial'),
+        ('organizations', '0001_initial'),
+    )
+
     def forwards(self, orm):
         # Adding model 'ProjectPhaseLog'
         db.create_table(u'projects_projectphaselog', (

@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
+# Generated with bb_schemamigration
 import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+from bluebottle.utils.model_dispatcher import get_model_mapping
+
+MODEL_MAP = get_model_mapping()
 
 
 class Migration(SchemaMigration):
@@ -11,10 +15,10 @@ class Migration(SchemaMigration):
         # Adding model 'MonthlyDonor'
         db.create_table(u'recurring_donations_monthlydonor', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['members.Member'], unique=True)),
+            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm[MODEL_MAP['user']['model']], unique=True)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
             ('updated', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
-            ('active', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('active', self.gf('django.db.models.fields.BooleanField')(default=True)),
             ('amount', self.gf('django.db.models.fields.DecimalField')(max_digits=6, decimal_places=2)),
             ('iban', self.gf('django_iban.fields.IBANField')(default='', max_length=34, blank=True)),
             ('bic', self.gf('django_iban.fields.SWIFTBICField')(default='', max_length=11, blank=True)),
@@ -28,7 +32,7 @@ class Migration(SchemaMigration):
         db.create_table(u'recurring_donations_monthlydonorproject', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('donor', self.gf('django.db.models.fields.related.ForeignKey')(related_name='projects', to=orm['recurring_donations.MonthlyDonor'])),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project'])),
+            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm[MODEL_MAP['project']['model']])),
         ))
         db.send_create_signal(u'recurring_donations', ['MonthlyDonorProject'])
 
@@ -45,7 +49,7 @@ class Migration(SchemaMigration):
         db.create_table(u'recurring_donations_monthlyproject', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('batch', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['recurring_donations.MonthlyBatch'])),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project'])),
+            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm[MODEL_MAP['project']['model']])),
             ('amount', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=6, decimal_places=2)),
         ))
         db.send_create_signal(u'recurring_donations', ['MonthlyProject'])
@@ -56,8 +60,8 @@ class Migration(SchemaMigration):
             ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
             ('updated', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
             ('batch', self.gf('django.db.models.fields.related.ForeignKey')(related_name='orders', to=orm['recurring_donations.MonthlyBatch'])),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['members.Member'])),
-            ('amount', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm[MODEL_MAP['user']['model']])),
+            ('amount', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=16, decimal_places=2)),
             ('currency', self.gf('django.db.models.fields.CharField')(default='EUR', max_length=3)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=35)),
             ('city', self.gf('django.db.models.fields.CharField')(max_length=35)),
@@ -72,10 +76,10 @@ class Migration(SchemaMigration):
         # Adding model 'MonthlyDonation'
         db.create_table(u'recurring_donations_monthlydonation', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['members.Member'])),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm[MODEL_MAP['user']['model']])),
             ('order', self.gf('django.db.models.fields.related.ForeignKey')(related_name='donations', to=orm['recurring_donations.MonthlyOrder'])),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project'])),
-            ('amount', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
+            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm[MODEL_MAP['project']['model']])),
+            ('amount', self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=16, decimal_places=2)),
         ))
         db.send_create_signal(u'recurring_donations', ['MonthlyDonation'])
 
@@ -164,17 +168,18 @@ class Migration(SchemaMigration):
             'numeric_code': ('django.db.models.fields.CharField', [], {'max_length': '3', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'region': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['geo.Region']"})
         },
-        u'members.member': {
-            'Meta': {'object_name': 'Member'},
+        MODEL_MAP['user']['model_lower']: {
+            'Meta': {'object_name': MODEL_MAP['user']['class']},
             'about': ('django.db.models.fields.TextField', [], {'max_length': '265', 'blank': 'True'}),
             'available_time': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'birthdate': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'campaign_notifications': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'deleted': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'disable_token': ('django.db.models.fields.CharField', [], {'max_length': '32', 'null': 'True', 'blank': 'True'}),
             'email': ('django.db.models.fields.EmailField', [], {'unique': 'True', 'max_length': '254', 'db_index': 'True'}),
             'facebook': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
+            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
             'gender': ('django.db.models.fields.CharField', [], {'max_length': '6', 'blank': 'True'}),
             'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -182,7 +187,7 @@ class Migration(SchemaMigration):
             'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
+            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
             'location': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
             'newsletter': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
@@ -200,8 +205,8 @@ class Migration(SchemaMigration):
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'why': ('django.db.models.fields.TextField', [], {'max_length': '265', 'blank': 'True'})
         },
-        u'organizations.organization': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Organization'},
+        MODEL_MAP['organization']['model_lower']: {
+            'Meta': {'ordering': "['name']", 'object_name': MODEL_MAP['organization']['class']},
             'account_bank_address': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'account_bank_city': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'account_bank_country': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'account_bank_country'", 'null': 'True', 'to': u"orm['geo.Country']"}),
@@ -245,12 +250,12 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'}),
             'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '100'})
         },
-        u'projects.project': {
-            'Meta': {'ordering': "['title']", 'object_name': 'Project'},
+        MODEL_MAP['project']['model_lower']: {
+            'Meta': {'ordering': "['title']", 'object_name': MODEL_MAP['project']['class']},
             'allow_overfunding': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'amount_asked': ('bluebottle.projects.fields.MoneyField', [], {'default': '0', 'null': 'True', 'max_digits': '12', 'decimal_places': '2', 'blank': 'True'}),
-            'amount_donated': ('bluebottle.projects.fields.MoneyField', [], {'default': '0', 'max_digits': '12', 'decimal_places': '2'}),
-            'amount_needed': ('bluebottle.projects.fields.MoneyField', [], {'default': '0', 'max_digits': '12', 'decimal_places': '2'}),
+            'amount_asked': ('bluebottle.bb_projects.fields.MoneyField', [], {'default': '0', 'null': 'True', 'max_digits': '12', 'decimal_places': '2', 'blank': 'True'}),
+            'amount_donated': ('bluebottle.bb_projects.fields.MoneyField', [], {'default': '0', 'max_digits': '12', 'decimal_places': '2'}),
+            'amount_needed': ('bluebottle.bb_projects.fields.MoneyField', [], {'default': '0', 'max_digits': '12', 'decimal_places': '2'}),
             'campaign_ended': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'campaign_funded': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'campaign_started': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
@@ -269,9 +274,8 @@ class Migration(SchemaMigration):
             'language': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['utils.Language']", 'null': 'True', 'blank': 'True'}),
             'latitude': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '21', 'decimal_places': '18', 'blank': 'True'}),
             'longitude': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '21', 'decimal_places': '18', 'blank': 'True'}),
-            'mchanga_account': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'organization': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'organization'", 'null': 'True', 'to': u"orm['organizations.Organization']"}),
-            'owner': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'owner'", 'to': u"orm['members.Member']"}),
+            'organization': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'organization'", 'null': 'True', 'to': "orm['{0}']".format(MODEL_MAP['organization']['model'])}),
+            'owner': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'owner'", 'to': "orm['{0}']".format(MODEL_MAP['user']['model'])}),
             'partner_organization': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.PartnerOrganization']", 'null': 'True', 'blank': 'True'}),
             'pitch': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'popularity': ('django.db.models.fields.FloatField', [], {'default': '0'}),
@@ -294,15 +298,15 @@ class Migration(SchemaMigration):
         },
         u'recurring_donations.monthlydonation': {
             'Meta': {'object_name': 'MonthlyDonation'},
-            'amount': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
+            'amount': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '16', 'decimal_places': '2'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'order': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'donations'", 'to': u"orm['recurring_donations.MonthlyOrder']"}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Project']"}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['members.Member']"})
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['{0}']".format(MODEL_MAP['project']['model'])}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['{0}']".format(MODEL_MAP['user']['model'])})
         },
         u'recurring_donations.monthlydonor': {
             'Meta': {'object_name': 'MonthlyDonor'},
-            'active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'amount': ('django.db.models.fields.DecimalField', [], {'max_digits': '6', 'decimal_places': '2'}),
             'bic': ('django_iban.fields.SWIFTBICField', [], {'default': "''", 'max_length': '11', 'blank': 'True'}),
             'city': ('django.db.models.fields.CharField', [], {'max_length': '35'}),
@@ -312,17 +316,17 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '35'}),
             'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['members.Member']", 'unique': 'True'})
+            'user': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['{0}']".format(MODEL_MAP['user']['model']), 'unique': 'True'})
         },
         u'recurring_donations.monthlydonorproject': {
             'Meta': {'object_name': 'MonthlyDonorProject'},
             'donor': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'projects'", 'to': u"orm['recurring_donations.MonthlyDonor']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Project']"})
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['{0}']".format(MODEL_MAP['project']['model'])})
         },
         u'recurring_donations.monthlyorder': {
             'Meta': {'object_name': 'MonthlyOrder'},
-            'amount': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
+            'amount': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '16', 'decimal_places': '2'}),
             'batch': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'orders'", 'to': u"orm['recurring_donations.MonthlyBatch']"}),
             'bic': ('django_iban.fields.SWIFTBICField', [], {'default': "''", 'max_length': '11', 'blank': 'True'}),
             'city': ('django.db.models.fields.CharField', [], {'max_length': '35'}),
@@ -335,14 +339,14 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '35'}),
             'processed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['members.Member']"})
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['{0}']".format(MODEL_MAP['user']['model'])})
         },
         u'recurring_donations.monthlyproject': {
             'Meta': {'object_name': 'MonthlyProject'},
             'amount': ('django.db.models.fields.DecimalField', [], {'default': '0', 'max_digits': '6', 'decimal_places': '2'}),
             'batch': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['recurring_donations.MonthlyBatch']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Project']"})
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['{0}']".format(MODEL_MAP['project']['model'])})
         },
         u'taggit.tag': {
             'Meta': {'object_name': 'Tag'},

@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
+# Generated with bb_schemamigration
 import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+from bluebottle.utils.model_dispatcher import get_model_mapping
+
+MODEL_MAP = get_model_mapping()
 
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
         # Adding model 'ProjectPayout'
-        db.create_table('payouts_payout', (
+        db.create_table(MODEL_MAP['project_payout']['table'], (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('invoice_reference', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('completed', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
@@ -18,7 +22,7 @@ class Migration(SchemaMigration):
             ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
             ('updated', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
             ('submitted', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project'])),
+            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm[MODEL_MAP['project']['model']])),
             ('payout_rule', self.gf('django.db.models.fields.CharField')(max_length=20)),
             ('amount_raised', self.gf('bluebottle.bb_projects.fields.MoneyField')(max_digits=12, decimal_places=2)),
             ('organization_fee', self.gf('bluebottle.bb_projects.fields.MoneyField')(max_digits=12, decimal_places=2)),
@@ -35,10 +39,10 @@ class Migration(SchemaMigration):
             ('description_line3', self.gf('django.db.models.fields.CharField')(default='', max_length=100, blank=True)),
             ('description_line4', self.gf('django.db.models.fields.CharField')(default='', max_length=100, blank=True)),
         ))
-        db.send_create_signal(u'payouts', ['ProjectPayout'])
+        db.send_create_signal(MODEL_MAP['project_payout']['app'], ['ProjectPayout'])
 
         # Adding model 'OrganizationPayout'
-        db.create_table(u'payouts_organizationpayout', (
+        db.create_table(MODEL_MAP['organization_payout']['table'], (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('invoice_reference', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('completed', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
@@ -62,21 +66,21 @@ class Migration(SchemaMigration):
             ('payable_amount_vat', self.gf('bluebottle.bb_projects.fields.MoneyField')(max_digits=12, decimal_places=2)),
             ('payable_amount_incl', self.gf('bluebottle.bb_projects.fields.MoneyField')(max_digits=12, decimal_places=2)),
         ))
-        db.send_create_signal(u'payouts', ['OrganizationPayout'])
+        db.send_create_signal(MODEL_MAP['project_payout']['app'], ['OrganizationPayout'])
 
         # Adding unique constraint on 'OrganizationPayout', fields ['start_date', 'end_date']
-        db.create_unique(u'payouts_organizationpayout', ['start_date', 'end_date'])
+        db.create_unique(MODEL_MAP['organization_payout']['table'], ['start_date', 'end_date'])
 
 
     def backwards(self, orm):
         # Removing unique constraint on 'OrganizationPayout', fields ['start_date', 'end_date']
-        db.delete_unique(u'payouts_organizationpayout', ['start_date', 'end_date'])
+        db.delete_unique(MODEL_MAP['organization_payout']['table'], ['start_date', 'end_date'])
 
         # Deleting model 'ProjectPayout'
-        db.delete_table('payouts_payout')
+        db.delete_table(MODEL_MAP['project_payout']['table'])
 
         # Deleting model 'OrganizationPayout'
-        db.delete_table(u'payouts_organizationpayout')
+        db.delete_table(MODEL_MAP['organization_payout']['table'])
 
 
     models = {
@@ -143,11 +147,12 @@ class Migration(SchemaMigration):
             'numeric_code': ('django.db.models.fields.CharField', [], {'max_length': '3', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'region': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['geo.Region']"})
         },
-        u'members.member': {
-            'Meta': {'object_name': 'Member'},
+        MODEL_MAP['user']['model_lower']: {
+            'Meta': {'object_name': MODEL_MAP['user']['class']},
             'about': ('django.db.models.fields.TextField', [], {'max_length': '265', 'blank': 'True'}),
             'available_time': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'birthdate': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'campaign_notifications': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'deleted': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'disable_token': ('django.db.models.fields.CharField', [], {'max_length': '32', 'null': 'True', 'blank': 'True'}),
@@ -179,8 +184,8 @@ class Migration(SchemaMigration):
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'why': ('django.db.models.fields.TextField', [], {'max_length': '265', 'blank': 'True'})
         },
-        u'organizations.organization': {
-            'Meta': {'ordering': "['name']", 'object_name': 'Organization'},
+        MODEL_MAP['organization']['model_lower']: {
+            'Meta': {'ordering': "['name']", 'object_name': MODEL_MAP['organization']['class']},
             'account_bank_address': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'account_bank_city': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'account_bank_country': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'account_bank_country'", 'null': 'True', 'to': u"orm['geo.Country']"}),
@@ -216,8 +221,8 @@ class Migration(SchemaMigration):
             'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'})
         },
-        u'payouts.organizationpayout': {
-            'Meta': {'ordering': "['start_date']", 'unique_together': "(('start_date', 'end_date'),)", 'object_name': 'OrganizationPayout'},
+        MODEL_MAP['organization_payout']['model_lower']: {
+            'Meta': {'ordering': "['start_date']", 'unique_together': "(('start_date', 'end_date'),)", 'object_name': MODEL_MAP['organization_payout']['class']},
             'completed': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'end_date': ('django.db.models.fields.DateField', [], {}),
@@ -241,8 +246,8 @@ class Migration(SchemaMigration):
             'submitted': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'})
         },
-        u'payouts.projectpayout': {
-            'Meta': {'ordering': "['-created']", 'object_name': 'ProjectPayout', 'db_table': "'payouts_payout'"},
+        MODEL_MAP['project_payout']['model_lower']: {
+            'Meta': {'ordering': "['-created']", 'object_name': MODEL_MAP['project_payout']['class']},
             'amount_payable': ('bluebottle.bb_projects.fields.MoneyField', [], {'max_digits': '12', 'decimal_places': '2'}),
             'amount_raised': ('bluebottle.bb_projects.fields.MoneyField', [], {'max_digits': '12', 'decimal_places': '2'}),
             'completed': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
@@ -256,7 +261,7 @@ class Migration(SchemaMigration):
             'organization_fee': ('bluebottle.bb_projects.fields.MoneyField', [], {'max_digits': '12', 'decimal_places': '2'}),
             'payout_rule': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
             'planned': ('django.db.models.fields.DateField', [], {}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Project']"}),
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['{0}']".format(MODEL_MAP['project']['model'])}),
             'receiver_account_bic': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
             'receiver_account_city': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'receiver_account_country': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True'}),
@@ -276,8 +281,8 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'}),
             'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '100'})
         },
-        u'projects.project': {
-            'Meta': {'ordering': "['title']", 'object_name': 'Project'},
+        MODEL_MAP['project']['model_lower']: {
+            'Meta': {'ordering': "['title']", 'object_name': MODEL_MAP['project']['class']},
             'allow_overfunding': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'amount_asked': ('bluebottle.bb_projects.fields.MoneyField', [], {'default': '0', 'null': 'True', 'max_digits': '12', 'decimal_places': '2', 'blank': 'True'}),
             'amount_donated': ('bluebottle.bb_projects.fields.MoneyField', [], {'default': '0', 'max_digits': '12', 'decimal_places': '2'}),
@@ -300,9 +305,8 @@ class Migration(SchemaMigration):
             'language': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['utils.Language']", 'null': 'True', 'blank': 'True'}),
             'latitude': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '21', 'decimal_places': '18', 'blank': 'True'}),
             'longitude': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '21', 'decimal_places': '18', 'blank': 'True'}),
-            'mchanga_account': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'organization': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'organization'", 'null': 'True', 'to': u"orm['organizations.Organization']"}),
-            'owner': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'owner'", 'to': u"orm['members.Member']"}),
+            'organization': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'organization'", 'null': 'True', 'to': "orm['{0}']".format(MODEL_MAP['organization']['model'])}),
+            'owner': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'owner'", 'to': "orm['{0}']".format(MODEL_MAP['user']['model'])}),
             'partner_organization': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.PartnerOrganization']", 'null': 'True', 'blank': 'True'}),
             'pitch': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'popularity': ('django.db.models.fields.FloatField', [], {'default': '0'}),
@@ -338,4 +342,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['payouts']
+    complete_apps = [MODEL_MAP['project_payout']['app']]

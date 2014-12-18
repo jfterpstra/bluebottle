@@ -7,6 +7,10 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ('bb_accounts', '0001_initial'),
+    )
+
     def forwards(self, orm):
         # Adding field 'Member.time_available'
         db.add_column(u'members_member', 'time_available',

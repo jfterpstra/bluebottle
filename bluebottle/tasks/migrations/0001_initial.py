@@ -1,43 +1,85 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
+# Generated with bb_schemamigration
+import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+from bluebottle.utils.model_dispatcher import get_model_mapping
+
+MODEL_MAP = get_model_mapping()
 
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
         # Adding model 'Task'
-        db.create_table(u'tasks_task', (
+        db.create_table(MODEL_MAP['task']['table'], (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('title', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('description', self.gf('django.db.models.fields.TextField')()),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['projects.Project'])),
-            ('author', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'tasks_task_related', to=orm['members.Member'])),
+            ('end_goal', self.gf('django.db.models.fields.TextField')()),
+            ('location', self.gf('django.db.models.fields.CharField')(max_length=200)),
+            ('people_needed', self.gf('django.db.models.fields.PositiveIntegerField')(default=1)),
+            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm[MODEL_MAP['project']['model']])),
+            ('author', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'tasks_task_related', to=orm[MODEL_MAP['user']['model']])),
             ('status', self.gf('django.db.models.fields.CharField')(default='open', max_length=20)),
             ('date_status_change', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('deadline', self.gf('django.db.models.fields.DateTimeField')()),
             ('time_needed', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('skill', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['bb_tasks.Skill'], null=True)),
+            ('skill', self.gf('django.db.models.fields.related.ForeignKey')(to=orm[MODEL_MAP['task_skill']['model']], null=True)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
             ('updated', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
-            ('end_goal', self.gf('django.db.models.fields.TextField')()),
-            ('location', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('expertise', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('people_needed', self.gf('django.db.models.fields.PositiveIntegerField')(default=1)),
         ))
-        db.send_create_signal(u'tasks', ['Task'])
+        db.send_create_signal(MODEL_MAP['task_file']['app'], ['Task'])
+
+        # Adding model 'Skill'
+        db.create_table(MODEL_MAP['task_skill']['table'], (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=100)),
+            ('name_nl', self.gf('django.db.models.fields.CharField')(unique=True, max_length=100)),
+            ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
+        ))
+        db.send_create_signal(MODEL_MAP['task_file']['app'], ['Skill'])
+
+        # Adding model 'TaskMember'
+        db.create_table(MODEL_MAP['task_member']['table'], (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('member', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'tasks_taskmember_related', to=orm[MODEL_MAP['user']['model']])),
+            ('task', self.gf('django.db.models.fields.related.ForeignKey')(related_name='members', to=orm[MODEL_MAP['task']['model']])),
+            ('status', self.gf('django.db.models.fields.CharField')(default='applied', max_length=20)),
+            ('motivation', self.gf('django.db.models.fields.TextField')(blank=True)),
+            ('comment', self.gf('django.db.models.fields.TextField')(blank=True)),
+            ('time_spent', self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=0)),
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('updated', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+        ))
+        db.send_create_signal(MODEL_MAP['task_file']['app'], ['TaskMember'])
+
+        # Adding model 'TaskFile'
+        db.create_table(MODEL_MAP['task_file']['table'], (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('author', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'tasks_taskfile_related', to=orm[MODEL_MAP['user']['model']])),
+            ('title', self.gf('django.db.models.fields.CharField')(max_length=255)),
+            ('file', self.gf('django.db.models.fields.files.FileField')(max_length=100)),
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('updated', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('task', self.gf('django.db.models.fields.related.ForeignKey')(related_name='files', to=orm[MODEL_MAP['task']['model']])),
+        ))
+        db.send_create_signal(MODEL_MAP['task_file']['app'], ['TaskFile'])
+
 
     def backwards(self, orm):
         # Deleting model 'Task'
-        db.delete_table(u'tasks_task')
+        db.delete_table(MODEL_MAP['task']['table'])
 
-        # Removing M2M table for field members on 'Task'
-        db.delete_table(db.shorten_name(u'tasks_task_members'))
+        # Deleting model 'Skill'
+        db.delete_table(MODEL_MAP['task_skill']['table'])
 
-        # Removing M2M table for field files on 'Task'
-        db.delete_table(db.shorten_name(u'tasks_task_files'))
+        # Deleting model 'TaskMember'
+        db.delete_table(MODEL_MAP['task_member']['table'])
+
+        # Deleting model 'TaskFile'
+        db.delete_table(MODEL_MAP['task_file']['table'])
 
 
     models = {
@@ -61,7 +103,9 @@ class Migration(SchemaMigration):
             'editable': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
+            'owner_editable': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'sequence': ('django.db.models.fields.IntegerField', [], {'unique': 'True'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '200'}),
             'viewable': ('django.db.models.fields.BooleanField', [], {'default': 'True'})
         },
         u'bb_projects.projecttheme': {
@@ -71,13 +115,6 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
             'name_nl': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
             'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '100'})
-        },
-        u'bb_tasks.skill': {
-            'Meta': {'ordering': "('id',)", 'object_name': 'Skill'},
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
-            'name_nl': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})
         },
         u'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
@@ -109,16 +146,18 @@ class Migration(SchemaMigration):
             'numeric_code': ('django.db.models.fields.CharField', [], {'max_length': '3', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'region': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['geo.Region']"})
         },
-        u'members.member': {
-            'Meta': {'object_name': 'Member'},
+        MODEL_MAP['user']['model_lower']: {
+            'Meta': {'object_name': MODEL_MAP['user']['class']},
             'about': ('django.db.models.fields.TextField', [], {'max_length': '265', 'blank': 'True'}),
-            'availability': ('django.db.models.fields.CharField', [], {'max_length': '25', 'blank': 'True'}),
+            'available_time': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'birthdate': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'campaign_notifications': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'deleted': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'disable_token': ('django.db.models.fields.CharField', [], {'max_length': '32', 'null': 'True', 'blank': 'True'}),
             'email': ('django.db.models.fields.EmailField', [], {'unique': 'True', 'max_length': '254', 'db_index': 'True'}),
             'facebook': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
+            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
             'gender': ('django.db.models.fields.CharField', [], {'max_length': '6', 'blank': 'True'}),
             'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -126,7 +165,7 @@ class Migration(SchemaMigration):
             'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
+            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
             'location': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
             'newsletter': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
@@ -144,6 +183,43 @@ class Migration(SchemaMigration):
             'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'why': ('django.db.models.fields.TextField', [], {'max_length': '265', 'blank': 'True'})
         },
+        MODEL_MAP['organization']['model_lower']: {
+            'Meta': {'ordering': "['name']", 'object_name': MODEL_MAP['organization']['class']},
+            'account_bank_address': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'account_bank_city': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'account_bank_country': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'account_bank_country'", 'null': 'True', 'to': u"orm['geo.Country']"}),
+            'account_bank_name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'account_bank_postal_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
+            'account_bic': ('django_iban.fields.SWIFTBICField', [], {'max_length': '11', 'blank': 'True'}),
+            'account_holder_address': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'account_holder_city': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'account_holder_country': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'account_holder_country'", 'null': 'True', 'to': u"orm['geo.Country']"}),
+            'account_holder_name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'account_holder_postal_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
+            'account_iban': ('django_iban.fields.IBANField', [], {'max_length': '34', 'blank': 'True'}),
+            'account_number': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'account_other': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'address_line1': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
+            'address_line2': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
+            'city': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
+            'country': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'country'", 'null': 'True', 'to': u"orm['geo.Country']"}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'deleted': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
+            'facebook': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
+            'partner_organizations': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '40', 'blank': 'True'}),
+            'postal_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
+            'registration': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'skype': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '100'}),
+            'state': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
+            'twitter': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'})
+        },
         u'projects.partnerorganization': {
             'Meta': {'object_name': 'PartnerOrganization'},
             'description': ('django.db.models.fields.TextField', [], {}),
@@ -152,28 +228,41 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'}),
             'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '100'})
         },
-        u'projects.project': {
-            'Meta': {'ordering': "['title']", 'object_name': 'Project'},
-            'coach': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'team_member'", 'null': 'True', 'to': u"orm['members.Member']"}),
+        MODEL_MAP['project']['model_lower']: {
+            'Meta': {'ordering': "['title']", 'object_name': MODEL_MAP['project']['class']},
+            'allow_overfunding': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'amount_asked': ('bluebottle.bb_projects.fields.MoneyField', [], {'default': '0', 'null': 'True', 'max_digits': '12', 'decimal_places': '2', 'blank': 'True'}),
+            'amount_donated': ('bluebottle.bb_projects.fields.MoneyField', [], {'default': '0', 'max_digits': '12', 'decimal_places': '2'}),
+            'amount_needed': ('bluebottle.bb_projects.fields.MoneyField', [], {'default': '0', 'max_digits': '12', 'decimal_places': '2'}),
+            'campaign_ended': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'campaign_funded': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'campaign_started': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'country': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['geo.Country']", 'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'date_submitted': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'deadline': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'effects': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'favorite': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'for_who': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'future': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'image': ('sorl.thumbnail.fields.ImageField', [], {'max_length': '255', 'blank': 'True'}),
             'is_campaign': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'language': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['utils.Language']", 'null': 'True', 'blank': 'True'}),
             'latitude': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '21', 'decimal_places': '18', 'blank': 'True'}),
             'longitude': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '21', 'decimal_places': '18', 'blank': 'True'}),
-            'owner': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'owner'", 'to': u"orm['members.Member']"}),
+            'organization': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'organization'", 'null': 'True', 'to': "orm['{0}']".format(MODEL_MAP['organization']['model'])}),
+            'owner': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'owner'", 'to': "orm['{0}']".format(MODEL_MAP['user']['model'])}),
             'partner_organization': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.PartnerOrganization']", 'null': 'True', 'blank': 'True'}),
-            'phase': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
             'pitch': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'popularity': ('django.db.models.fields.FloatField', [], {'default': '0'}),
             'reach': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'skip_monthly': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '100'}),
             'status': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['bb_projects.ProjectPhase']"}),
-            'theme': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['bb_projects.ProjectTheme']", 'null': 'True'}),
+            'story': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'theme': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['bb_projects.ProjectTheme']", 'null': 'True', 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'}),
             'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'video_url': ('django.db.models.fields.URLField', [], {'default': "''", 'max_length': '100', 'null': 'True', 'blank': 'True'})
@@ -191,25 +280,60 @@ class Migration(SchemaMigration):
             'object_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True'}),
             'tag': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'taggit_taggeditem_items'", 'to': u"orm['taggit.Tag']"})
         },
-        u'tasks.task': {
-            'Meta': {'ordering': "['-created']", 'object_name': 'Task'},
-            'author': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'tasks_task_related'", 'to': u"orm['members.Member']"}),
+        MODEL_MAP['task_skill']['model_lower']: {
+            'Meta': {'ordering': "('id',)", 'object_name': MODEL_MAP['task_skill']['class']},
+            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
+            'name_nl': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})
+        },
+        MODEL_MAP['task']['model_lower']: {
+            'Meta': {'ordering': "['-created']", 'object_name': MODEL_MAP['task']['class']},
+            'author': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'tasks_task_related'", 'to': "orm['{0}']".format(MODEL_MAP['user']['model'])}),
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
             'date_status_change': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'deadline': ('django.db.models.fields.DateTimeField', [], {}),
             'description': ('django.db.models.fields.TextField', [], {}),
             'end_goal': ('django.db.models.fields.TextField', [], {}),
-            'expertise': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'location': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'people_needed': ('django.db.models.fields.PositiveIntegerField', [], {'default': '1'}),
-            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['projects.Project']"}),
-            'skill': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['bb_tasks.Skill']", 'null': 'True'}),
+            'project': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['{0}']".format(MODEL_MAP['project']['model'])}),
+            'skill': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['{0}']".format(MODEL_MAP['task_skill']['model']), 'null': 'True'}),
             'status': ('django.db.models.fields.CharField', [], {'default': "'open'", 'max_length': '20'}),
             'time_needed': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'})
+        },
+        MODEL_MAP['task_file']['model_lower']: {
+            'Meta': {'object_name': MODEL_MAP['task_file']['class']},
+            'author': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'tasks_taskfile_related'", 'to': "orm['{0}']".format(MODEL_MAP['user']['model'])}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            'file': ('django.db.models.fields.files.FileField', [], {'max_length': '100'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'task': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'files'", 'to': "orm['{0}']".format(MODEL_MAP['task']['model'])}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
+            'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'})
+        },
+        MODEL_MAP['task_member']['model_lower']: {
+            'Meta': {'object_name': MODEL_MAP['task_member']['class']},
+            'comment': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'member': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'tasks_taskmember_related'", 'to': "orm['{0}']".format(MODEL_MAP['user']['model'])}),
+            'motivation': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'status': ('django.db.models.fields.CharField', [], {'default': "'applied'", 'max_length': '20'}),
+            'task': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'members'", 'to': "orm['{0}']".format(MODEL_MAP['task']['model'])}),
+            'time_spent': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '0'}),
+            'updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now', 'blank': 'True'})
+        },
+        u'utils.language': {
+            'Meta': {'ordering': "['language_name']", 'object_name': 'Language'},
+            'code': ('django.db.models.fields.CharField', [], {'max_length': '2'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'language_name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'native_name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         }
     }
 
-    complete_apps = ['tasks']
+    complete_apps = [MODEL_MAP['task_file']['app']]

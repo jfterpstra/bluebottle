@@ -108,8 +108,6 @@ class BaseTask(models.Model, GetTweetMixin):
     people_needed = models.PositiveIntegerField(_('people needed'), default=1)
 
     project = models.ForeignKey(settings.PROJECTS_PROJECT_MODEL)
-    # See Django docs on issues with related name and an (abstract) base class:
-    # https://docs.djangoproject.com/en/dev/topics/db/models/#be-careful-with-related-name
     author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='%(app_label)s_%(class)s_related')
     status = models.CharField(
         _('status'), max_length=20, choices=TaskStatuses.choices,
@@ -121,7 +119,7 @@ class BaseTask(models.Model, GetTweetMixin):
 
     objects = models.Manager()
 
-    # required resources
+    # Required resources
     time_needed = models.CharField(
         _('time_needed'), max_length=200,
         help_text=_('Estimated number of hours needed to perform this task.'))

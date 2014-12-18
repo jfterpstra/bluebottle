@@ -15,9 +15,6 @@ INSTALLED_APPS += (
 EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 COMPRESS_ENABLED = False
 
-# Include the tests models
-INCLUDE_TEST_MODELS = True
-
 # Yes, activate the South migrations. Otherwise, we'll never notice if our
 # code screwed up the database synchronization
 SOUTH_TESTS_MIGRATE = True
