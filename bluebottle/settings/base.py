@@ -218,6 +218,7 @@ INSTALLED_APPS = (
     'bluebottle.quotes',
     'bluebottle.payments',
     'bluebottle.payments_docdata',
+    'bluebottle.payments_mock',
     'bluebottle.payments_logger',
     'bluebottle.payments_voucher',
     'bluebottle.redirects',

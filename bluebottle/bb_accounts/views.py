@@ -203,18 +203,17 @@ class PasswordSet(views.APIView):
     serializer_class = PasswordSetSerializer
 
     def _get_user(self, uidb36):
-        user_model = get_user_model()
+        USER_MODEL = get_user_model()
         try:
             uid_int = base36_to_int(uidb36)
-            user = user_model._default_manager.get(pk=uid_int)
-        except (ValueError, OverflowError, user.DoesNotExist):
+            user = USER_MODEL._default_manager.get(pk=uid_int)
+        except (ValueError, OverflowError, USER_MODEL.DoesNotExist):
             user = None
 
         return user
 
     def put(self, request, *args, **kwargs):
         # The uidb36 and the token are checked by the URLconf.
-
         user = self._get_user(self.kwargs.get('uidb36'))
         token = self.kwargs.get('token')
 

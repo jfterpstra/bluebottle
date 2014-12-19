@@ -18,8 +18,8 @@ class GeoTestCase(BluebottleTestCase):
     """
     def setUp(self):
         super(GeoTestCase, self).setUp()
-        self.country_1 = CountryFactory.create(name="Afghanistan")
-        self.country_2 = CountryFactory.create(name="Albania")
+        self.country_1 = CountryFactory.create(id=1, name="Gondwanaland")
+        self.country_2 = CountryFactory.create(id=2, name="Pan")
 
 
 class CountryListTestCase(GeoTestCase):
@@ -46,7 +46,7 @@ class CountryListTestCase(GeoTestCase):
 
         country = response.data[0]
         self.assertEqual(country['id'], 1)
-        self.assertEqual(country['name'], 'Afghanistan')
+        self.assertEqual(country['name'], 'Gondwanaland')
         self.assertEqual(country['oda'], False)
         self.assertEqual(country['code'], '')
 

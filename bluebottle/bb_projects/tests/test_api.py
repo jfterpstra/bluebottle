@@ -30,9 +30,9 @@ class ProjectEndpointTestCase(BluebottleTestCase):
         self.phase_2 = ProjectPhase.objects.get(slug='plan-submitted')
         self.phase_3 = ProjectPhase.objects.get(slug='campaign')
 
-        self.theme_1 = ProjectTheme.objects.get(id=1)
-        self.theme_2 = ProjectTheme.objects.get(id=2)
-        self.theme_3 = ProjectTheme.objects.get(id=3)
+        self.theme_1 = ProjectTheme.objects.all()[0]
+        self.theme_2 = ProjectTheme.objects.all()[1]
+        self.theme_3 = ProjectTheme.objects.all()[2]
 
         self.project_1 = ProjectFactory.create(owner=self.user, status=self.phase_1, theme=self.theme_1)
         self.project_2 = ProjectFactory.create(owner=self.user, status=self.phase_2, theme=self.theme_2)
@@ -230,8 +230,7 @@ class TestProjectThemeDetail(ProjectEndpointTestCase):
         """
         Test the API endpoint for Project theme detail.
         """
-        response = self.client.get(
-            reverse('project_theme_detail', kwargs={'pk': self.project_1.pk}))
+        response = self.client.get(reverse('project_theme_detail', kwargs={'pk': self.theme_1.pk}))
 
         self.assertEqual(response.status_code, 200)
 
