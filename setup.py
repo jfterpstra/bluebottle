@@ -69,7 +69,7 @@ install_requires = [
     'djangorestframework-jwt',
     'django-salesforce',
     'django-taggit-autocomplete-modified==0.1.0b4',
-    'django-tenant-schemas',
+    'django-tenant-schemas==v1.5.1',
 
     # Bitbucket requirements
     'django-filetransfers',
