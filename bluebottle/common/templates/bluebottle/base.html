@@ -194,6 +194,8 @@
         <a {{action "selectLanguage" view.content.code}}{{bindAttr title=view.content.name}}>{{ view.content.code }}</a>
     {% endtplhandlebars %}
 
+    {% block transifexlive %}{% endblock %}
+
 </head>
 <body id="body">
     <!-- Scripts -->
