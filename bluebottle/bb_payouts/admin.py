@@ -57,7 +57,7 @@ class ProjectPayoutAdmin(admin.ModelAdmin):
         'project__title', 'project__organization__name'
     ]
 
-    date_hierarchy = 'updated'
+    date_hierarchy = 'completed'
     can_delete = False
 
     list_filter = ['status', 'payout_rule']

@@ -128,7 +128,7 @@ class OrderPayment(models.Model, FSMTransition):
         # TODO: add started state behaviour here
         pass
 
-    @transition(field=status, save=True, source=StatusDefinition.STARTED, target=StatusDefinition.AUTHORIZED)
+    @transition(field=status, save=True, source=[StatusDefinition.SETTLED, StatusDefinition.STARTED], target=StatusDefinition.AUTHORIZED)
     def authorized(self):
         # TODO: add authorized state behaviour here
         pass
@@ -146,11 +146,11 @@ class OrderPayment(models.Model, FSMTransition):
         # TODO: add cancelled state behaviour here
         pass
 
-    @transition(field=status, save=True, source=StatusDefinition.AUTHORIZED, target=StatusDefinition.CHARGED_BACK)
+    @transition(field=status, save=True, source=[StatusDefinition.AUTHORIZED, StatusDefinition.SETTLED], target=StatusDefinition.CHARGED_BACK)
     def charged_back(self):
         self.closed = None
 
-    @transition(field=status, save=True, source=StatusDefinition.AUTHORIZED, target=StatusDefinition.REFUNDED)
+    @transition(field=status, save=True, source=[StatusDefinition.AUTHORIZED, StatusDefinition.SETTLED], target=StatusDefinition.REFUNDED)
     def refunded(self):
         self.closed = None
 

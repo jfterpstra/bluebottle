@@ -34,5 +34,4 @@ class PaymentStatusUpdateView(View):
 
         service = PaymentService(order_payment)
         service.check_payment_status()
-
         return HttpResponse('success')

@@ -22,14 +22,15 @@ class DocdataTransactionInline(admin.TabularInline):
 class DocdataPaymentAdmin(PolymorphicChildModelAdmin):
     base_model = Payment
     model = DocdataPayment
-
+    list_display = ['created', 'payment_cluster_key', 'total_gross_amount', 'status']
+    search_fields = ['merchant_order_id', 'payment_cluster_key']
     inlines = (PaymentLogEntryInline, DocdataTransactionInline)
 
     readonly_fields = ('order_payment_link', 'merchant_order_id', 'payment_cluster_link', 'payment_cluster_key',
-                       'ideal_issuer_id', 'default_pm', 'total_gross_amount', 'currency', 'ip_address',
+                       'ideal_issuer_id', 'default_pm', 'currency', 'ip_address',
                         'customer_id', 'email', 'first_name', 'last_name', 'address', 'postal_code', 'city', 'country',)
 
-    fields = ('status', ) + readonly_fields
+    fields = ('status', 'total_gross_amount') + readonly_fields
 
     def order_payment_link(self, obj):
         object = obj.order_payment
@@ -44,21 +45,23 @@ class DocdataPaymentAdmin(PolymorphicChildModelAdmin):
         return '{1} <a href="{0}" target="docdata">[Docdata Backoffice]</a>'.format(url, obj.payment_cluster_id)
 
     payment_cluster_link.allow_tags = True
-    
+
+
+admin.site.register(DocdataPayment, DocdataPaymentAdmin)
 
 
 class DocdataDirectdebitPaymentAdmin(PolymorphicChildModelAdmin):
     base_model = Payment
     model = DocdataDirectdebitPayment
 
-    readonly_fields = ('order_payment_link', 'payment_cluster_id', 'payment_cluster_key', 'status',
+    readonly_fields = ('order_payment_link', 'payment_cluster_id', 'payment_cluster_key',
                        'ideal_issuer_id', 'default_pm', 'total_gross_amount', 'currency',
                        'total_registered', 'total_shopper_pending',
                        'total_acquirer_pending', 'total_acquirer_approved',
                        'total_captured', 'total_refunded', 'total_charged_back',
                         'iban', 'bic', 'agree', 'account_name', 'account_city')
 
-    fields = readonly_fields
+    fields = ('status', ) + readonly_fields
 
     def order_payment_link(self, obj):
         object = obj.order_payment
