@@ -26,13 +26,13 @@ class Command(BaseCommand):
         self.stdout.write("Checking deadlines for client {0}".format(client.client_name))
 
         try:
-            done_phase = ProjectPhase.objects.get(slug='done')
+            done_phase = ProjectPhase.objects.get(slug='done-complete')
             self.stdout.write("Found ProjectPhase model with name 'Done'")
         except ProjectPhase.DoesNotExist:
             raise CommandError("A ProjectPhase with name 'Done' does not exist")
 
         try:
-            campaign_phase = ProjectPhase.objects.get(slug='running')
+            campaign_phase = ProjectPhase.objects.get(slug='campaign')
             self.stdout.write("Found ProjectPhase model with name 'Running'")
         except ProjectPhase.DoesNotExist:
             raise CommandError("A ProjectPhase with name 'Running' does not exist")

@@ -38,7 +38,7 @@ class WidgetView(View):
         projects = None
         now = timezone.now()
 
-        allowed_phases = ProjectPhase.objects.filter(slug__in=['running', 'campaign'])
+        allowed_phases = ProjectPhase.objects.filter(slug='campaign')
 
         if project_slug:
             try:
