@@ -1,10 +1,13 @@
 from datetime import datetime
 
+
+from django.db import connection
+from django_fsm.db.fields import TransitionNotAllowed
+from tenant_schemas.utils import get_tenant_model
+
 from bluebottle.test.factory_models.donations import DonationFactory
 from bluebottle.payments.services import PaymentService
 from bluebottle.test.utils import BluebottleTestCase
-
-from django_fsm.db.fields import TransitionNotAllowed
 
 from bluebottle.test.factory_models.payments import PaymentFactory, OrderPaymentFactory
 from bluebottle.test.factory_models.orders import OrderFactory
@@ -12,7 +15,7 @@ from bluebottle.utils.utils import StatusDefinition
 
 
 class BlueBottlePaymentTestCase(BluebottleTestCase):
-    
+
     def setUp(self):
         super(BlueBottlePaymentTestCase, self).setUp()
         self.init_projects()
@@ -86,12 +89,34 @@ class BlueBottlePaymentTestCase(BluebottleTestCase):
         # Starting an authorized Payment should not change Order Payment status
         with self.assertRaises(TransitionNotAllowed):
             self.payment.save()
-            
+
         self.assertEqual(self.payment.order_payment.status, StatusDefinition.AUTHORIZED,
             'Starting an authorized Payment should not change Order Payment status')
 
         self.assertEqual(self.payment.order_payment.order.status, StatusDefinition.PENDING,
             'Starting an authorized Payment should not change Order status')
+
+    def test_info_text(self):
+        self.assertEqual(
+            self.order_payment.info_text,
+            'testserver via onepercentclub.com {id}'.format(id=self.order_payment.id)
+        )
+
+    def test_info_text_onepercent(self):
+        test_tenant = connection.get_tenant()
+        tenant = get_tenant_model()(
+            domain_url='onepercentclub.com',
+            schema_name='onepercent',
+            client_name='1% club')
+
+        connection.set_tenant(tenant)
+
+        self.assertEqual(
+            self.order_payment.info_text,
+            'onepercentclub.com donation {id}'.format(id=self.order_payment.id)
+        )
+
+        connection.set_tenant(test_tenant)
 
 
 class BlueBottlePaymentFeeTestCase(BluebottleTestCase):
@@ -99,7 +124,7 @@ class BlueBottlePaymentFeeTestCase(BluebottleTestCase):
     def setUp(self):
         super(BlueBottlePaymentFeeTestCase, self).setUp()
         self.init_projects()
-        
+
         self.order = OrderFactory.create()
         self.donation = DonationFactory(amount=60, order=self.order)
         self.order_payment = OrderPaymentFactory.create(order=self.order)
