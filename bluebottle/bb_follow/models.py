@@ -8,7 +8,7 @@ from django.utils import translation
 from bluebottle.utils.model_dispatcher import get_user_model
 from bluebottle.bb_projects.models import BaseProject
 from bluebottle.bb_tasks.models import BaseTask, BaseTaskMember
-from bluebottle.bb_donations.models import BaseDonation
+from bluebottle.donations.models import Donation
 from bluebottle.bb_fundraisers.models import BaseFundraiser
 from bluebottle.clients.utils import tenant_url
 from bluebottle.utils.email_backend import send_mail
@@ -136,7 +136,7 @@ def create_follow(sender, instance, created, **kwargs):
     #                     follow.save()
 
     # A user does a donation
-    elif isinstance(instance, BaseDonation):
+    elif isinstance(instance, Donation):
         # Create a Follow to the specific Project or Task if a donation was
         # made
         user = instance.user
