@@ -13,11 +13,11 @@ from bluebottle.test.factory_models.geo import CountryFactory
 from bluebottle.test.factory_models.projects import ProjectFactory
 from bluebottle.test.factory_models.payments import OrderPaymentFactory
 from bluebottle.test.factory_models.orders import OrderFactory, OrderActionFactory
-from bluebottle.bb_orders.views import ManageOrderDetail
+from bluebottle.orders.views import ManageOrderDetail
 from bluebottle.payments_mock.adapters import MockPaymentAdapter
 
 class TestOrderPaymentPermissions(BluebottleTestCase):
-    """ Test the permissions for order ownership in bb_orders """
+    """ Test the permissions for order ownership in orders """
 
     def setUp(self):
         super(TestOrderPaymentPermissions, self).setUp()

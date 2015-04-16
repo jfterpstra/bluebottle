@@ -10,7 +10,7 @@ from bluebottle.payments.serializers import ManageOrderPaymentSerializer
 from bluebottle.payments.services import get_payment_methods
 from bluebottle.payments.models import Payment, OrderPayment
 from bluebottle.payments.services import PaymentService
-from bluebottle.bb_orders.permissions import IsOrderCreator, LoggedInUser
+from bluebottle.orders.permissions import IsOrderCreator, LoggedInUser
 from bluebottle.payments.serializers import ManageOrderPaymentSerializer
 from bluebottle.payments.services import get_payment_methods
 from bluebottle.payments.models import Payment, OrderPayment
