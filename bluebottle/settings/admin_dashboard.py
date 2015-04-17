@@ -28,7 +28,7 @@ FLUENT_DASHBOARD_APP_GROUPS = (
             'bluebottle.bb_projects.*',
             'bluebottle.fundraisers.*',
             'bluebottle.organizations.*',
-            'bluebottle.bb_organizations.*',
+            'bluebottle.organizations.*',
         ),
         'module': 'fluent_dashboard.modules.AppIconList',
         'collapsible': False,

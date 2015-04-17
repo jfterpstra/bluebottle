@@ -50,7 +50,7 @@ class OrganizationListTestCase(OrganizationsEndpointTestCase):
     """
     Test case for ``OrganizationsList`` API view.
 
-    Endpoint: /api/bb_organizations/
+    Endpoint: /api/organizations/
     """
 
     def test_api_organizations_list_endpoint(self):
@@ -72,7 +72,7 @@ class OrganizationDetailTestCase(OrganizationsEndpointTestCase):
     """
     Test case for ``OrganizationsList`` API view.
 
-    Endpoint: /api/bb_organizations/{pk}
+    Endpoint: /api/organizations/{pk}
     """
 
     def test_api_organizations_detail_endpoint(self):
@@ -88,7 +88,7 @@ class ManageOrganizationListTestCase(OrganizationsEndpointTestCase):
     """
     Test case for ``ManageOrganizationsList`` API view.
 
-    Endpoint: /api/bb_organizations/manage/
+    Endpoint: /api/organizations/manage/
     """
 
     def test_api_manage_organizations_list_user_filter(self):
@@ -158,7 +158,7 @@ class ManageOrganizationDetailTestCase(OrganizationsEndpointTestCase):
     """
     Test case for ``OrganizationsList`` API view.
 
-    Endpoint: /api/bb_organizations/manage/{pk}
+    Endpoint: /api/organizations/manage/{pk}
     """
 
     def test_manage_organizations_detail_login_required(self):

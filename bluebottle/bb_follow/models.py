@@ -218,8 +218,8 @@ def create_follow(sender, instance, created, **kwargs):
 
 @receiver(post_save)
 def email_followers(sender, instance, created, **kwargs):
-    """ 
-        When a Wallpost is created, project owners, task owners and fundraiser owners can check a box wether to email their followers. This 
+    """
+        When a Wallpost is created, project owners, task owners and fundraiser owners can check a box wether to email their followers. This
         signal handler looksup the appropriate followers depending on the type of page (project, task, fundraiser). It then sends out an email
         to those followers if they have campaign notifications enabled.
     """

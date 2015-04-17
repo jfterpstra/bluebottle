@@ -12,7 +12,7 @@ from django.template.context import RequestContext
 urlpatterns = patterns('',
     # The api urls are in the / url namespace so that they're not redirected to /en/.
     url(r'^api/users/', include('bluebottle.bb_accounts.urls.api')),
-    url(r'^api/bb_organizations/', include('bluebottle.bb_organizations.urls.api')),
+    url(r'^api/organizations/', include('bluebottle.organizations.urls.api')),
     url(r'^api/bb_projects/', include('bluebottle.bb_projects.urls.api')),
     url(r'^api/fundraisers/', include('bluebottle.bb_fundraisers.urls.api')),
     url(r'^api/bb_tasks/', include('bluebottle.bb_tasks.urls.api')),
