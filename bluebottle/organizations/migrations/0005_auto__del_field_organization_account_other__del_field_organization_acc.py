@@ -12,6 +12,9 @@ class Migration(SchemaMigration):
     )
 
     def forwards(self, orm):
+        # Deleting field 'Organization.person'
+        db.delete_column(u'organizations_organization', 'person')
+
         # Deleting field 'Organization.account_other'
         db.delete_column(u'organizations_organization', 'account_other')
 
@@ -126,6 +129,10 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.CharField')(default='', max_length=20, blank=True),
                       keep_default=False)
 
+        # Adding field 'Organization.person'
+        db.add_column(u'organizations_organization', 'person',
+                      self.gf('django.db.models.fields.BooleanField')(default=True),
+                      keep_default=False)
 
     models = {
         u'auth.group': {
