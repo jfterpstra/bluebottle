@@ -355,6 +355,8 @@ class PrivateFileSerializer(FileSerializer):
         content_type = ContentType.objects.get_for_model(self.parent.Meta.model).id
         pk = obj.pk
         url = reverse('document_download_detail', kwargs={'content_type': content_type, 'pk': pk})
+        if not os.path.exists(os.path.basename(value.name)):
+            return None
         return {'name': os.path.basename(value.name),
                 'url': url,
                 'size': defaultfilters.filesizeformat(value.size)}
