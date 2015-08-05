@@ -13,16 +13,10 @@ from .serializers import StatisticSerializer
 
 class Statistics(object):
     def _get_cached(self, key):
-        tenant_name = connection.tenant.client_name
-        tenant_key = '-'.join([tenant_name, key])
-
-        return cache.get(tenant_key)
+        return cache.get(key)
 
     def _set_cached(self, key, value, timeout=300):
-        tenant_name = connection.tenant.client_name
-        tenant_key = '-'.join([tenant_name, key])
-
-        return cache.set(tenant_key, value, timeout)
+        return cache.set(key, value, timeout)
 
     def clear_cached(self):
         tenant_name = connection.tenant.client_name
